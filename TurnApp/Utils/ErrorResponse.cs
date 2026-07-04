@@ -2,7 +2,7 @@
 
 namespace TurnApp.Utils
 {
-    public class ErrorResponse
+    public class ErrorResponse : Exception
     {
         public ResponseMessage Message { get; }
         public HttpStatusCode StatusCode { get; set; }

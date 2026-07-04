@@ -14,13 +14,9 @@ namespace TurnApp.Models.Turno
 
         public string EstadoTurno { get; set; } = null!;
         
-
-        [ForeignKey(nameof(Paciente))]
         public int PacienteId { get; set; }
         public Paciente.Paciente Paciente { get; set; } = null!;
-
        
-        [ForeignKey(nameof(Profesional))]
         public int ProfesionalId { get; set; }
         public Profesional.Profesional Profesional { get; set; } = null!;
     }

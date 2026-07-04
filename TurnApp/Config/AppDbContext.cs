@@ -57,13 +57,15 @@ namespace TurnApp.Config
             modelBuilder.Entity<Paciente>()
                 .HasMany(p => p.Turnos)
                 .WithOne(t => t.Paciente)
-                .HasForeignKey(t => t.PacienteId);
+                .HasForeignKey(t => t.PacienteId)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
             modelBuilder.Entity<Profesional>()
                 .HasMany(p => p.Turnos)
                 .WithOne(t => t.Profesional)
-                .HasForeignKey(t => t.ProfesionalId);
+                .HasForeignKey(t => t.ProfesionalId)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
         }

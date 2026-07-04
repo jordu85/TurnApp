@@ -19,6 +19,12 @@ namespace TurnApp.Config
 
         public Mapping()
         {
+            //Tipos
+            CreateMap<int?, int>().ConvertUsing((src, dest) => src ?? dest);
+            CreateMap<bool?, bool>().ConvertUsing((src, dest) => src ?? dest);
+            CreateMap<List<string>?, List<string>>().ConvertUsing((src, dest) => src ?? dest);
+            CreateMap<List<int>?, List<int>>().ConvertUsing((src, dest) => src ?? dest);
+
             //Paciente
             CreateMap<Paciente, PacienteDTO>()
             .ForMember(d => d.NombreCompleto,

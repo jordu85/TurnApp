@@ -12,13 +12,10 @@ namespace TurnApp.Models.Profesional
         public string Apellido { get; set; } = null!;
         public string Matricula { get; set; } = null!;
 
-        public List<Turno.Turno> Turnos = new();
+        public List<Turno.Turno> Turnos { get; set; } = new();
 
-        public List<Especialidad.Especialidad> Especialidades = new();
-
-        [ForeignKey(nameof(User))]
+        public List<Especialidad.Especialidad> Especialidades { get; set; } = new();    
         public int UsuarioId { get; set; }
-
-        public User.User user { get; set; } = null!;
+        public User.User User { get; set; } = null!;
     }
 }
