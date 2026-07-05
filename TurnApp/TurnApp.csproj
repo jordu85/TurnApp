@@ -17,18 +17,14 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Resend" Version="0.5.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 	  <Content Include="Templates/*">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
-	  <Compile Remove="Templates\ejemplo.cs" />
+	  <None Remove="Templates\confirm-email.html" />
+	  <None Remove="Templates\reset-password.html" />
 	  <Using Include="BCrypt.Net.BCrypt" Alias="BC" />
 	  <Using Include="HandlebarsDotNet.Handlebars" Alias="HB" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>
