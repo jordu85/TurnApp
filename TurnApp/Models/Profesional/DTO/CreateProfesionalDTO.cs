@@ -18,5 +18,7 @@ namespace TurnApp.Models.Profesional.DTO
 
         [Required]
         public int UsuarioId { get; set; }
+
+        public List<int> EspecialidadesIds { get; set; } = new();
     }
 }

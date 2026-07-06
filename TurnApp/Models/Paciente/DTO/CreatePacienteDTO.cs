@@ -2,7 +2,7 @@
 
 namespace TurnApp.Models.Paciente.DTO
 {
-    public class CrearPacienteDTO
+    public class CreatePacienteDTO
     {
         [Required]
         [StringLength(50)]

@@ -31,7 +31,7 @@ namespace TurnApp.Config
                 o => o.MapFrom(s => s.Nombre + " " + s.Apellido))
             .ReverseMap();
 
-            CreateMap<CrearPacienteDTO, Paciente>();
+            CreateMap<CreatePacienteDTO, Paciente>();
 
             CreateMap<UpdatePacienteDTO, Paciente>()
                 .ForAllMembers(cfg => cfg.Condition((_, _, value) => value != null));
