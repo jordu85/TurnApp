@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TurnApp.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class CreacionInicio : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -86,7 +86,6 @@ namespace TurnApp.Migrations
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Apellido = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Matricula = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UsuarioId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -125,24 +124,24 @@ namespace TurnApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProfesionalEspecialidad",
+                name: "EspecialidadProfesional",
                 columns: table => new
                 {
-                    ProfesionalId = table.Column<int>(type: "int", nullable: false),
-                    EspecialidadId = table.Column<int>(type: "int", nullable: false)
+                    EspecialidadesId = table.Column<int>(type: "int", nullable: false),
+                    ProfesionalesId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProfesionalEspecialidad", x => new { x.EspecialidadId, x.ProfesionalId });
+                    table.PrimaryKey("PK_EspecialidadProfesional", x => new { x.EspecialidadesId, x.ProfesionalesId });
                     table.ForeignKey(
-                        name: "FK_ProfesionalEspecialidad_Especialidades_EspecialidadId",
-                        column: x => x.EspecialidadId,
+                        name: "FK_EspecialidadProfesional_Especialidades_EspecialidadesId",
+                        column: x => x.EspecialidadesId,
                         principalTable: "Especialidades",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProfesionalEspecialidad_Profesionales_ProfesionalId",
-                        column: x => x.ProfesionalId,
+                        name: "FK_EspecialidadProfesional_Profesionales_ProfesionalesId",
+                        column: x => x.ProfesionalesId,
                         principalTable: "Profesionales",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -182,8 +181,8 @@ namespace TurnApp.Migrations
                 values: new object[,]
                 {
                     { 1, "Admin" },
-                    { 2, "User" },
-                    { 3, "Mod" }
+                    { 2, "Pac" },
+                    { 3, "Prof" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -191,6 +190,11 @@ namespace TurnApp.Migrations
                 table: "Especialidades",
                 column: "Nombre",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EspecialidadProfesional_ProfesionalesId",
+                table: "EspecialidadProfesional",
+                column: "ProfesionalesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Pacientes_UserId",
@@ -207,11 +211,6 @@ namespace TurnApp.Migrations
                 name: "IX_Profesionales_UserId",
                 table: "Profesionales",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProfesionalEspecialidad_ProfesionalId",
-                table: "ProfesionalEspecialidad",
-                column: "ProfesionalId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Roles_Name",
@@ -251,7 +250,7 @@ namespace TurnApp.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ProfesionalEspecialidad");
+                name: "EspecialidadProfesional");
 
             migrationBuilder.DropTable(
                 name: "RoleUser");

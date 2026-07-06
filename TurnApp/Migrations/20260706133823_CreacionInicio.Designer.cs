@@ -12,8 +12,8 @@ using TurnApp.Config;
 namespace TurnApp.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260704191315_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260706133823_CreacionInicio")]
+    partial class CreacionInicio
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace TurnApp.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("EspecialidadProfesional", b =>
+                {
+                    b.Property<int>("EspecialidadesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProfesionalesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("EspecialidadesId", "ProfesionalesId");
+
+                    b.HasIndex("ProfesionalesId");
+
+                    b.ToTable("EspecialidadProfesional");
+                });
 
             modelBuilder.Entity("TurnApp.Models.Especialidad.Especialidad", b =>
                 {
@@ -97,9 +112,6 @@ namespace TurnApp.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Matricula")
@@ -108,21 +120,6 @@ namespace TurnApp.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Profesionales");
-                });
-
-            modelBuilder.Entity("TurnApp.Models.ProfesionalEspecialidad", b =>
-                {
-                    b.Property<int>("EspecialidadId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProfesionalId")
-                        .HasColumnType("int");
-
-                    b.HasKey("EspecialidadId", "ProfesionalId");
-
-                    b.HasIndex("ProfesionalId");
-
-                    b.ToTable("ProfesionalEspecialidad");
                 });
 
             modelBuilder.Entity("TurnApp.Models.Role.Role", b =>
@@ -153,12 +150,12 @@ namespace TurnApp.Migrations
                         new
                         {
                             Id = 2,
-                            Name = "User"
+                            Name = "Pac"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Mod"
+                            Name = "Prof"
                         });
                 });
 
@@ -241,6 +238,21 @@ namespace TurnApp.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("EspecialidadProfesional", b =>
+                {
+                    b.HasOne("TurnApp.Models.Especialidad.Especialidad", null)
+                        .WithMany()
+                        .HasForeignKey("EspecialidadesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TurnApp.Models.Profesional.Profesional", null)
+                        .WithMany()
+                        .HasForeignKey("ProfesionalesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("TurnApp.Models.Paciente.Paciente", b =>
                 {
                     b.HasOne("TurnApp.Models.User.User", "User")
@@ -261,21 +273,6 @@ namespace TurnApp.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TurnApp.Models.ProfesionalEspecialidad", b =>
-                {
-                    b.HasOne("TurnApp.Models.Especialidad.Especialidad", null)
-                        .WithMany()
-                        .HasForeignKey("EspecialidadId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TurnApp.Models.Profesional.Profesional", null)
-                        .WithMany()
-                        .HasForeignKey("ProfesionalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("TurnApp.Models.RoleUser", b =>
