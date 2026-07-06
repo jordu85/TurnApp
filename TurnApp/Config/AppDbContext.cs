@@ -26,8 +26,8 @@ namespace TurnApp.Config
             
             modelBuilder.Entity<Role>().HasData(
                 new Role() { Id = 1, Name = "Admin" },
-                new Role() { Id = 2, Name = "User" },
-                new Role() { Id = 3, Name = "Mod" }
+                new Role() { Id = 2, Name = "Pac" },
+                new Role() { Id = 3, Name = "Prof" }
             );
 
             modelBuilder.Entity<Especialidad>().HasIndex(x => x.Nombre).IsUnique();
@@ -47,12 +47,8 @@ namespace TurnApp.Config
                 );
 
             modelBuilder.Entity<Profesional>()
-                .HasMany(p => p.Especialidades)
-                .WithMany()
-                .UsingEntity<ProfesionalEspecialidad>(
-                     l => l.HasOne<Especialidad>().WithMany().HasForeignKey(x => x.EspecialidadId),
-                     r => r.HasOne<Profesional>().WithMany().HasForeignKey(x => x.ProfesionalId)
-                );
+            .HasMany(p => p.Especialidades)
+            .WithMany(e => e.Profesionales);
 
             modelBuilder.Entity<Paciente>()
                 .HasMany(p => p.Turnos)
