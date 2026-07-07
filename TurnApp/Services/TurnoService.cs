@@ -87,5 +87,26 @@ namespace TurnApp.Services
             return lista;
         }
 
+        public async Task<List<TurnoDTO>> GetManyByIdsDto(List<int> ids)
+        {
+            if (ids.Count == 0 || ids == null)
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.BadRequest,
+                    "La lista de TurnosIds no puede estar vacia"
+                );
+            }
+
+            var lista = await _repo.GetAll(x => ids.Contains(x.Id));
+            if (lista.Count == 0)
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.BadRequest,
+                    "No coincide ningun Id"
+                );
+            }
+            return _mapper.Map<List<TurnoDTO>>(lista);
+        }
+
     }
 }

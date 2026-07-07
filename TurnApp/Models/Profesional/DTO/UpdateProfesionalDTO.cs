@@ -9,6 +9,5 @@ namespace TurnApp.Models.Profesional.DTO
         public string? Matricula { get; set; }
 
         public List<int>? TurnosIds { get; set; } = new();
-        public List<int>? EspecialidadesIds { get; set; } = new();
     }
 }

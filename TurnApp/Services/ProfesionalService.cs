@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using System.Net;
+using TurnApp.Models.Paciente;
+using TurnApp.Models.Paciente.DTO;
 using TurnApp.Models.Profesional;
 using TurnApp.Models.Profesional.DTO;
 using TurnApp.Models.Turno;
@@ -66,13 +68,6 @@ namespace TurnApp.Services
         {
             var prof = await _GetOneById(id);
 
-            if (updateDto.EspecialidadesIds != null)
-            {                
-                List<int> espIds = updateDto.EspecialidadesIds;
-                var especialidades = await _espService.GetManyByIds(espIds);
-                prof.Especialidades = especialidades;
-            }
-
             if (updateDto.TurnosIds != null)
             {
                 List<int> turnIds = updateDto.TurnosIds;
@@ -85,10 +80,21 @@ namespace TurnApp.Services
             return await _repo.UpdateOne(updated);
         }
 
+        public async Task<Profesional> AsignarEspecialidadesAProfesional(int id, AsignarEspecialidadesAProfesionalDTO asign)
+        {
+            var prof = await _GetOneById(id);
+
+            List<int> Ids = asign.EspecialidadesIds;
+            var especialidades = await _espService.GetManyByIds(Ids);
+            prof.Especialidades = especialidades;
+
+            return await _repo.UpdateOne(prof);
+        }
+
         public async Task DeleteOneById(int id)
         {
-            var emp = await _GetOneById(id);
-            await _repo.DeleteOne(emp);
+            var prof = await _GetOneById(id);
+            await _repo.DeleteOne(prof);
         }
 
     }

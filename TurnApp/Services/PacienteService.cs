@@ -3,6 +3,7 @@ using System.Net;
 using TurnApp.Models.Paciente;
 using TurnApp.Models.Paciente.DTO;
 using TurnApp.Models.Turno;
+using TurnApp.Models.Turno.DTO;
 using TurnApp.Repositories;
 using TurnApp.Utils;
 
@@ -61,17 +62,37 @@ namespace TurnApp.Services
         {
             var pac = await _GetOneById(id);
 
-            if (updateDto.TurnosIds != null)
-            {
-                var turns = await _turnService.GetManyByIds(updateDto.TurnosIds);
-                pac.Turnos = turns;
-            }
-
             var updated = _mapper.Map(updateDto, pac);
 
             return await _repo.UpdateOne(updated);
         }
 
+        public async Task<Paciente> AsignarTurnosAPaciente(int id, AsignarTurnosAPacienteDTO asign)
+        {
+            var pac = await _GetOneById(id);
+
+            List<int> Ids = asign.TurnosIds;
+            var turnos = await _turnService.GetManyByIds(Ids);
+            pac.Turnos = turnos;
+
+            return await _repo.UpdateOne(pac);
+        }
+
+        public async Task<List<TurnoDTO>> GetTurnosByPacienteId(int id)
+        {
+            var pac = await _GetOneById(id);
+
+            List<int> Ids = new();
+
+            foreach(var t in pac.Turnos)
+            {
+                Ids.Add(t.Id);
+            }
+
+            List<TurnoDTO> turnos = await _turnService.GetManyByIdsDto(Ids);
+            return turnos;
+
+        }
         public async Task DeleteOneById(int id)
         {
             var pac = await _GetOneById(id);
