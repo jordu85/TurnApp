@@ -48,7 +48,7 @@ namespace TurnApp.Config
 
             modelBuilder.Entity<Profesional>()
             .HasMany(p => p.Especialidades)
-            .WithMany(e => e.Profesionales);
+            .WithMany();
 
             modelBuilder.Entity<Paciente>()
                 .HasMany(p => p.Turnos)

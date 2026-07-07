@@ -9,6 +9,5 @@ namespace TurnApp.Models.Especialidad
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Nombre { get; set; } = null!;
-        public List<Profesional.Profesional> Profesionales { get; set; } = new();
     }
 }

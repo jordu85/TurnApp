@@ -31,7 +31,7 @@ namespace TurnApp.Config
                 o => o.MapFrom(s => s.Nombre + " " + s.Apellido))
             .ReverseMap();
 
-            CreateMap<CrearPacienteDTO, Paciente>();
+            CreateMap<CreatePacienteDTO, Paciente>();
 
             CreateMap<UpdatePacienteDTO, Paciente>()
                 .ForAllMembers(cfg => cfg.Condition((_, _, value) => value != null));
@@ -40,8 +40,6 @@ namespace TurnApp.Config
             CreateMap<Profesional, ProfesionalDTO>()
             .ForMember(d => d.NombreCompleto,
                 o => o.MapFrom(s => s.Nombre + " " + s.Apellido))
-            .ForMember(d => d.Especialidades,
-                o => o.MapFrom(s => s.Especialidades.Select(e => e.Nombre)))
             .ReverseMap();
 
             CreateMap<CreateProfesionalDTO, Profesional>();
@@ -51,10 +49,7 @@ namespace TurnApp.Config
 
 
             //Especialidad
-            CreateMap<Especialidad, EspecialidadDTO>()
-           .ForMember(d => d.Profesionales,
-               o => o.MapFrom(s => s.Profesionales.Select(p => p.Nombre + " " + p.Apellido)))
-           .ReverseMap();
+            CreateMap<Especialidad, EspecialidadDTO>().ReverseMap();
 
             CreateMap<CreateEspecialidadDTO, Especialidad>();
 

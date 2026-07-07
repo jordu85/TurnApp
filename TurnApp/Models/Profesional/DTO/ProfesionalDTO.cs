@@ -7,6 +7,6 @@
         public string Apellido { get; set; } = null!;
         public string Matricula { get; set; } = null!;
         public string NombreCompleto { get; set; } = null!;
-        public List<string> Especialidades { get; set; } = new();
+        public List<int> EspecialidadesIds { get; set; } = new();
     }
 }

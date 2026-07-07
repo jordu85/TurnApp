@@ -6,6 +6,8 @@ namespace TurnApp.Models.Profesional.DTO
     {
         public string? Nombre { get; set; } 
         public string? Apellido { get; set; }   
-        public string? Matricula { get; set; } 
+        public string? Matricula { get; set; }
+
+        public List<int>? TurnosIds { get; set; } = new();
     }
 }
