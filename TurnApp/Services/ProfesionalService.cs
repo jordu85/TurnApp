@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using HandlebarsDotNet;
 using System.Net;
 using TurnApp.Models.Paciente;
 using TurnApp.Models.Paciente.DTO;
 using TurnApp.Models.Profesional;
 using TurnApp.Models.Profesional.DTO;
 using TurnApp.Models.Turno;
+using TurnApp.Models.Turno.DTO;
 using TurnApp.Repositories;
 using TurnApp.Utils;
 
@@ -54,9 +56,21 @@ namespace TurnApp.Services
             return dto;
         }
 
-        public async Task<Profesional> CreateOne(CreateProfesionalDTO prof)
+        public async Task<Profesional> CreateOne(CreateProfesionalDTO prof, HttpContext context)
         {
             var p = _mapper.Map<Profesional>(prof);
+
+            var user = context.User.Claims.FirstOrDefault(claim => claim.Type == "id");
+            bool ok = int.TryParse(user?.Value, out int id);
+
+            if (!ok)
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.BadRequest,
+                    "Token invalido."
+                    );
+            }
+            p.UserId = id;
 
             var esps = await _espService.GetManyByIds(prof.EspecialidadesIds);
             p.Especialidades = esps;
@@ -84,11 +98,26 @@ namespace TurnApp.Services
         {
             var prof = await _GetOneById(id);
 
-            List<int> Ids = asign.EspecialidadesIds;
-            var especialidades = await _espService.GetManyByIds(Ids);
+            List<int> ids = asign.EspecialidadesIds;
+            var especialidades = await _espService.GetManyByIds(ids);
             prof.Especialidades = especialidades;
 
             return await _repo.UpdateOne(prof);
+        }
+
+        public async Task<List<TurnoDTO>> GetTurnosByProfesionalId(int id)
+        {
+            var prof = await _GetOneById(id);
+
+            List<int> Ids = new();
+
+            foreach (var t in prof.Turnos)
+            {
+                Ids.Add(t.Id);
+            }
+
+            List<TurnoDTO> turnos = await _turnService.GetManyByIdsDto(Ids);
+            return turnos;
         }
 
         public async Task DeleteOneById(int id)

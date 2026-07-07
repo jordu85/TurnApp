@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using System.Net;
+using System.Security.Claims;
 using TurnApp.Models.Paciente;
 using TurnApp.Models.Paciente.DTO;
 using TurnApp.Models.Turno;
@@ -51,9 +52,21 @@ namespace TurnApp.Services
             return dto;
         }
 
-        public async Task<Paciente> CreateOne(CreatePacienteDTO prof)
+        public async Task<Paciente> CreateOne(CreatePacienteDTO pac, HttpContext context)
         {
-            var p = _mapper.Map<Paciente>(prof);
+            var p = _mapper.Map<Paciente>(pac);
+
+            var user = context.User.Claims.FirstOrDefault(claim => claim.Type == "id");
+            bool ok = int.TryParse(user?.Value, out int id);
+
+            if (!ok)
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.BadRequest,
+                    "Token invalido."
+                    );
+            }
+            p.UserId = id;
 
             return await _repo.CreateOne(p);
         }
@@ -91,7 +104,40 @@ namespace TurnApp.Services
 
             List<TurnoDTO> turnos = await _turnService.GetManyByIdsDto(Ids);
             return turnos;
+        }
 
+        public async Task<List<TurnoDTO>> GetTurnosPropios(HttpContext context)
+        {
+            var user = context.User.Claims.FirstOrDefault(claim => claim.Type == "id");
+            bool ok = int.TryParse(user?.Value, out int id);
+
+            if (!ok)
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.BadRequest,
+                    "Token invalido."
+                    );
+            }
+
+            var pac = await _repo.GetOne(x => x.UserId == id);
+
+            if (pac == null)
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.NotFound,
+                    $"No se encontro paciente con UserId = {id}"
+                    );
+            }
+
+            List<int> Ids = new();
+
+            foreach (var t in pac.Turnos)
+            {
+                Ids.Add(t.Id);
+            }
+
+            List<TurnoDTO> turnos = await _turnService.GetManyByIdsDto(Ids);
+            return turnos;
         }
         public async Task DeleteOneById(int id)
         {

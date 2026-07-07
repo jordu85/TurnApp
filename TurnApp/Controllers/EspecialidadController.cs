@@ -23,8 +23,8 @@ namespace TurnApp.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(List<Especialidad>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<Especialidad>>> GetAll()
+        [ProducesResponseType(typeof(List<EspecialidadDTO>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<EspecialidadDTO>>> GetAll()
         {
             var e = await _espService.GetAll();
             return Ok(e);
@@ -32,9 +32,9 @@ namespace TurnApp.Controllers
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(Especialidad), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EspecialidadDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Especialidad>> GetOneById(int id)
+        public async Task<ActionResult<EspecialidadDTO>> GetOneById(int id)
         {
             try
             {
@@ -55,8 +55,8 @@ namespace TurnApp.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(Especialidad), StatusCodes.Status201Created)]
-        public async Task<ActionResult<Especialidad>> CreateOne([FromBody] EspecialidadDTO createEsp)
+        [ProducesResponseType(typeof(EspecialidadDTO), StatusCodes.Status201Created)]
+        public async Task<ActionResult<EspecialidadDTO>> CreateOne([FromBody] EspecialidadDTO createEsp)
         {
             try
             {
@@ -79,7 +79,7 @@ namespace TurnApp.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(Especialidad), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Especialidad>> UpdateOneById(int id, [FromBody] EspecialidadDTO updateEsp)
+        public async Task<ActionResult<EspecialidadDTO>> UpdateOneById(int id, [FromBody] EspecialidadDTO updateEsp)
         {
             try
             {

@@ -8,7 +8,11 @@ using Resend;
 using System;
 using System.Text;
 using TurnApp.Config;
+using TurnApp.Models.Especialidad;
+using TurnApp.Models.Paciente;
+using TurnApp.Models.Profesional;
 using TurnApp.Models.Role;
+using TurnApp.Models.Turno;
 using TurnApp.Repositories;
 using TurnApp.Services;
 using TurnApp.Utils;
@@ -47,12 +51,21 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<EspecialidadService>();
+builder.Services.AddScoped<TurnoService>();
+builder.Services.AddScoped<PacienteService>();
+builder.Services.AddScoped<ProfesionalService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEncoderService, EncoderService>();
 
 //repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRepository<Role>, Repository<Role>>();
+
+builder.Services.AddScoped<IRepository<Especialidad>, Repository<Especialidad>>();
+builder.Services.AddScoped<IRepository<Turno>, Repository<Turno>>();
+builder.Services.AddScoped<IRepository<Paciente>, Repository<Paciente>>();
+builder.Services.AddScoped<IRepository<Profesional>, Repository<Profesional>>();
 
 //mapper
 builder.Services.AddAutoMapper(cfg => { }, typeof(Mapping));
@@ -140,7 +153,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
