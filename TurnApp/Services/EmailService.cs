@@ -31,7 +31,7 @@ namespace TurnApp.Services
             var data = new
             {
                 dni = dni,
-                appName = "Empanadas Don Tito",
+                appName = "TurnApp",
                 resetUrl = callbackUrl
             };
 

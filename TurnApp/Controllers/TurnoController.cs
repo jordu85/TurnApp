@@ -22,7 +22,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(ROLES = $"{ROLES.Administrador}, {ROLES.Profesional}, {ROLES.Paciente}")]
         [ProducesResponseType(typeof(List<TurnoDTO>), StatusCodes.Status200OK)]
         public async Task<ActionResult<List<TurnoDTO>>> GetAll()
         {
@@ -31,7 +31,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
+        [Authorize(ROLES = $"{ROLES.Administrador}, {ROLES.Profesional}, {ROLES.Paciente}")]
         [ProducesResponseType(typeof(TurnoDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<TurnoDTO>> GetOneById(int id)
@@ -53,6 +53,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = ROLES.Administrador)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(Turno), StatusCodes.Status201Created)]
@@ -61,7 +62,7 @@ namespace TurnApp.Controllers
             try
             {
                 var turno = await _turnService.CreateOne(createTurn);
-                return Created("POST api/turnos", turno);
+                return Created("POST api/turno", turno);
             }
             catch (ErrorResponse ex)
             {
@@ -75,6 +76,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(ROLES = $"{ROLES.Administrador}, {ROLES.Profesional}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(Turno), StatusCodes.Status200OK)]
@@ -98,6 +100,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status200OK)]
