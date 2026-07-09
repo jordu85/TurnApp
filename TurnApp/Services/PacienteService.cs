@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using System.Net;
 using System.Security.Claims;
+using TurnApp.Enums;
 using TurnApp.Models.Paciente;
 using TurnApp.Models.Paciente.DTO;
 using TurnApp.Models.Turno;
@@ -86,6 +87,16 @@ namespace TurnApp.Services
 
             List<int> Ids = asign.TurnosIds;
             var turnos = await _turnService.GetManyByIds(Ids);
+
+            var turnosNoDisponibles = turnos.Where(t => t.EstadoTurno != ESTADOTURNO.Disponible).ToList();
+            if (turnosNoDisponibles.Count > 0)
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.BadRequest,
+                    "Solo se pueden asignar turnos con estado Disponible."
+                );
+            }
+
             pac.Turnos = turnos;
 
             return await _repo.UpdateOne(pac);

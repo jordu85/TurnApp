@@ -48,6 +48,8 @@ namespace TurnApp.Services
         {
             var turno = _mapper.Map<Turno>(turn);
 
+            turno.EstadoTurno = ESTADOTURNO.Disponible;
+
             return await _repo.CreateOne(turno);
         }
 
