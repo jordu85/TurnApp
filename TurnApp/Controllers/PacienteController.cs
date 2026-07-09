@@ -12,7 +12,7 @@ namespace TurnApp.Controllers
 {
     [Route("api/pacientes")]
     [ApiController]
-    [Authorize(Roles = $"{ROLES.Administrador}, ${ROLES.Profesional}")]
+    [Authorize(Roles = $"{ROLES.Administrador}, {ROLES.Profesional}")]
     [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status500InternalServerError)]
     public class PacienteController : ControllerBase
     {
@@ -23,7 +23,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = $"{ROLES.Administrador}")]
         [ProducesResponseType(typeof(List<PacienteDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<PacienteDTO>>> GetAll()
@@ -33,7 +33,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = $"{ROLES.Administrador}, ${ROLES.Profesional} {ROLES.Paciente}")]
+        [Authorize]
         [ProducesResponseType(typeof(PacienteDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<PacienteDTO>> GetOneById(int id)
@@ -55,7 +55,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize(Roles = $"{ROLES.Paciente}")]
         [ProducesResponseType(typeof(Paciente), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ResponseValidation), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<PacienteDTO>> CreateOne([FromBody] CreatePacienteDTO createPac)
@@ -77,7 +77,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(ROLES = $"{ROLES.Administrador}, {ROLES.Profesional}, {ROLES.Paciente}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(Paciente), StatusCodes.Status200OK)]
@@ -102,7 +102,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpPut("{id}/turnos")]
-        [Authorize]
+        [Authorize(ROLES = $"{ROLES.Administrador}, {ROLES.Profesional}, {ROLES.Paciente}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(Paciente), StatusCodes.Status200OK)]

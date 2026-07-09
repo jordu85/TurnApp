@@ -12,7 +12,7 @@ using TurnApp.Utils;
 
 namespace TurnApp.Controllers
 {
-    [Route("api/profesionales")]
+    [Route("api/profesional")]
     [ApiController]
     [Authorize(Roles = $"{ROLES.Administrador}, ${ROLES.Profesional}")]
     [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status500InternalServerError)]
@@ -25,7 +25,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(List<ProfesionalDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<ProfesionalDTO>>> GetAll()
@@ -35,7 +35,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize]
+        [Authorize(ROLES = $"{ROLES.Administrador}, {ROLES.Profesional}, {ROLES.Paciente}")]
         [ProducesResponseType(typeof(ProfesionalDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProfesionalDTO>> GetOneById(int id)
@@ -81,7 +81,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize($"{ROLES.Administrador}, ${ROLES.Profesional}")]
+        [Authorize($"{ROLES.Administrador}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(Profesional), StatusCodes.Status200OK)]
