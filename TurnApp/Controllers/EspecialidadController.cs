@@ -9,7 +9,7 @@ using TurnApp.Utils;
 
 namespace TurnApp.Controllers
 {
-    [Route("api/especialidad")]
+    [Route("api/especialidades")]
     [ApiController]
     [Authorize(Roles = ROLES.Administrador)]
     [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status500InternalServerError)]
@@ -31,7 +31,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
+        [Authorize]
         [ProducesResponseType(typeof(EspecialidadDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<EspecialidadDTO>> GetOneById(int id)
@@ -53,10 +53,11 @@ namespace TurnApp.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(EspecialidadDTO), StatusCodes.Status201Created)]
-        public async Task<ActionResult<EspecialidadDTO>> CreateOne([FromBody] EspecialidadDTO createEsp)
+        public async Task<ActionResult<Especialidad>> CreateOne([FromBody] EspecialidadDTO createEsp)
         {
             try
             {
@@ -75,11 +76,12 @@ namespace TurnApp.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(Especialidad), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<EspecialidadDTO>> UpdateOneById(int id, [FromBody] EspecialidadDTO updateEsp)
+        public async Task<ActionResult<Especialidad>> UpdateOneById(int id, [FromBody] EspecialidadDTO updateEsp)
         {
             try
             {
@@ -98,6 +100,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status200OK)]

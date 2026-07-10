@@ -28,7 +28,7 @@ namespace TurnApp.Controllers
         {
             try
             {
-                var created = await _authService.Register(register);
+                var created = await _authService.Register(register, HttpContext);
                 return Created("/api/auth/register", created);
             }
             catch (ErrorResponse ex)

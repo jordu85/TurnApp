@@ -12,9 +12,9 @@ using TurnApp.Utils;
 
 namespace TurnApp.Controllers
 {
-    [Route("api/profesional")]
+    [Route("api/profesionales")]
     [ApiController]
-    [Authorize(Roles = $"{ROLES.Administrador}, ${ROLES.Profesional}")]
+    [Authorize(Roles = $"{ROLES.Administrador}, {ROLES.Profesional}")]
     [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status500InternalServerError)]
     public class ProfesionalController : ControllerBase
     {
@@ -35,7 +35,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(ROLES = $"{ROLES.Administrador}, {ROLES.Profesional}, {ROLES.Paciente}")]
+        [Authorize(Roles = $"{ROLES.Administrador}, {ROLES.Profesional}, {ROLES.Paciente}")]
         [ProducesResponseType(typeof(ProfesionalDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProfesionalDTO>> GetOneById(int id)
@@ -62,7 +62,7 @@ namespace TurnApp.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(Profesional), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ResponseValidation), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ProfesionalDTO>> CreateOne([FromBody] CreateProfesionalDTO createProf)
+        public async Task<ActionResult<Profesional>> CreateOne([FromBody] CreateProfesionalDTO createProf)
         {
             try
             {
@@ -81,13 +81,13 @@ namespace TurnApp.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize($"{ROLES.Administrador}")]
+        [Authorize(Roles = $"{ROLES.Administrador}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(Profesional), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseValidation), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ProfesionalDTO>> UpdateOneById(int id, [FromBody] UpdateProfesionalDTO updateProfesional)
+        public async Task<ActionResult<Profesional>> UpdateOneById(int id, [FromBody] UpdateProfesionalDTO updateProfesional)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace TurnApp.Controllers
         [ProducesResponseType(typeof(Profesional), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseValidation), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ProfesionalDTO>> AsignarEspecialidadesAProfesional(int id, [FromBody] AsignarEspecialidadesAProfesionalDTO asign)
+        public async Task<ActionResult<Profesional>> AsignarEspecialidadesAProfesional(int id, [FromBody] AsignarEspecialidadesAProfesionalDTO asign)
         {
             try
             {
@@ -130,30 +130,30 @@ namespace TurnApp.Controllers
             }
         }
 
-        [HttpGet("{id}/turnos")]
-        [Authorize(Roles = $"{ROLES.Administrador}, ${ROLES.Profesional}")]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(Profesional), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ResponseValidation), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<TurnoDTO>>> GetTurnosByProfesionalId(int id)
-        {
-            try
-            {
-                var turnos = await _profService.GetTurnosByProfesionalId(id);
-                return Ok(turnos);
-            }
-            catch (ErrorResponse ex)
-            {
-                return StatusCode((int)ex.StatusCode, ex.Message);
-            }
-            catch (Exception ex)
-            {
-                ResponseMessage msg = new ResponseMessage(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, msg);
-            }
-        }
+        //[HttpGet("{id}/turnos")]
+        //[Authorize(Roles = $"{ROLES.Administrador}, ${ROLES.Profesional}")]
+        //[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        //[ProducesResponseType(StatusCodes.Status403Forbidden)]
+        //[ProducesResponseType(typeof(TurnoDTO), StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(ResponseValidation), StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
+        //public async Task<ActionResult<List<TurnoDTO>>> GetTurnosByProfesionalId(int id)
+        //{
+        //    try
+        //    {
+        //        var turnos = await _turnService.GetTurnosByProfesionalId(id);
+        //        return Ok(turnos);
+        //    }
+        //    catch (ErrorResponse ex)
+        //    {
+        //        return StatusCode((int)ex.StatusCode, ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ResponseMessage msg = new ResponseMessage(ex.Message);
+        //        return StatusCode(StatusCodes.Status500InternalServerError, msg);
+        //    }
+        //}
 
         [HttpDelete("{id}")]
         [Authorize(Roles = ROLES.Administrador)]
