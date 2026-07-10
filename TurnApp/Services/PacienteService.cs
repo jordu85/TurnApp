@@ -15,13 +15,11 @@ namespace TurnApp.Services
     {
         private readonly IMapper _mapper;
         private readonly IRepository<Paciente> _repo;
-        private readonly TurnoService _turnService;
 
-        public PacienteService(IMapper mapper, TurnoService turnService, IRepository<Paciente> repo)
+        public PacienteService(IMapper mapper, IRepository<Paciente> repo)
         {
             _mapper = mapper;
             _repo = repo;
-            _turnService = turnService;
         }
 
         public async Task<List<PacienteDTO>> GetAll()
