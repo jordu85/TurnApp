@@ -55,7 +55,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = $"{ROLES.Paciente}")]
+        [Authorize(Roles = $"{ROLES.Administrador}, {ROLES.Profesional}, {ROLES.Paciente}")]
         [ProducesResponseType(typeof(Paciente), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ResponseValidation), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Paciente>> CreateOne([FromBody] CreatePacienteDTO createPac)
