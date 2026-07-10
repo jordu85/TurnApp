@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
+using TurnApp.Config;
 using TurnApp.Enums;
 using TurnApp.Models.Paciente;
 using TurnApp.Models.Turno;
@@ -14,13 +16,15 @@ namespace TurnApp.Services
 
         private readonly IMapper _mapper;
         private readonly IRepository<Turno> _repo;
+        private readonly AppDbContext _db;
         private readonly PacienteService _pacService;
         private readonly ProfesionalService _profService;
 
-        public TurnoService(IMapper mapper, PacienteService pacService, ProfesionalService profService, IRepository<Turno> repo)
+        public TurnoService(IMapper mapper, PacienteService pacService, ProfesionalService profService, IRepository<Turno> repo, AppDbContext db)
         {
             _mapper = mapper;
             _repo = repo;
+            _db = db;
             _pacService = pacService;
             _profService = profService;
         }
@@ -150,7 +154,7 @@ namespace TurnApp.Services
             return _mapper.Map<List<TurnoDTO>>(turnos);
         }
 
-        public async Task<Turno> AsignarPacienteATurno(int turnoId, int pacienteId)
+        public async Task<TurnoDTO> AsignarPacienteATurno(int turnoId, int pacienteId)
         {
             var turno = await _GetOneById(turnoId);
             if (turno.EstadoTurno != ESTADOTURNO.Disponible)
@@ -160,7 +164,16 @@ namespace TurnApp.Services
                     "Solo se pueden asignar turnos con estado Disponible.");
             }
             turno.PacienteId = pacienteId;
-            return await _repo.UpdateOne(turno);
+            turno.EstadoTurno = ESTADOTURNO.Reservado;
+            
+            await _repo.UpdateOne(turno);
+
+            var updatedTurno =  await _db.Turnos
+                .Include(t => t.Paciente)
+                .Include(t => t.Profesional)
+                .FirstAsync(t => t.Id == turnoId);
+
+            return _mapper.Map<TurnoDTO>(updatedTurno);
         }
 
     }

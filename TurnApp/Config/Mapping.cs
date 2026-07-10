@@ -59,7 +59,7 @@ namespace TurnApp.Config
             //Turnos
             CreateMap<Turno, TurnoDTO>()
            .ForMember(d => d.PacienteNombreCompleto,
-               o => o.MapFrom(s => s.Paciente.Nombre + " " + s.Paciente.Apellido))
+               o => o.MapFrom(s => s.Paciente != null ? s.Paciente.Nombre + " " + s.Paciente.Apellido : null))
            .ForMember(d => d.ProfesionalNombreCompleto,
                o => o.MapFrom(s => s.Profesional.Nombre + " " + s.Profesional.Apellido));
 

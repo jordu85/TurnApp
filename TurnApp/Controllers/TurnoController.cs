@@ -11,7 +11,7 @@ namespace TurnApp.Controllers
 {
     [Route("api/turno")]
     [ApiController]
-    [Authorize(Roles = ROLES.Administrador)]
+    [Authorize]
     [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status500InternalServerError)]
     public class TurnoController : ControllerBase
     {
@@ -166,11 +166,11 @@ namespace TurnApp.Controllers
         }
 
         [HttpPut("{turnoId}/paciente/{pacienteId}")]
-        [Authorize(Roles = $"{ROLES.Administrador}, {ROLES.Profesional}")]
-        [ProducesResponseType(typeof(Turno), StatusCodes.Status200OK)]
+        [Authorize(Roles = $"{ROLES.Administrador}, {ROLES.Profesional}, {ROLES.Paciente}")]
+        [ProducesResponseType(typeof(TurnoDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Turno>> AsignarPacienteATurno(int turnoId, int pacienteId)
+        public async Task<ActionResult<TurnoDTO>> AsignarPacienteATurno(int turnoId, int pacienteId)
         {
             try
             {
@@ -189,7 +189,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = ROLES.Administrador)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status200OK)]

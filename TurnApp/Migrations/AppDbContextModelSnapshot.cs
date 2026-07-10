@@ -27,12 +27,12 @@ namespace TurnApp.Migrations
                     b.Property<int>("EspecialidadesId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProfesionalesId")
+                    b.Property<int>("ProfesionalId")
                         .HasColumnType("int");
 
-                    b.HasKey("EspecialidadesId", "ProfesionalesId");
+                    b.HasKey("EspecialidadesId", "ProfesionalId");
 
-                    b.HasIndex("ProfesionalesId");
+                    b.HasIndex("ProfesionalId");
 
                     b.ToTable("EspecialidadProfesional");
                 });
@@ -186,7 +186,7 @@ namespace TurnApp.Migrations
                     b.Property<DateTime>("FechaHora")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PacienteId")
+                    b.Property<int?>("PacienteId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProfesionalId")
@@ -245,7 +245,7 @@ namespace TurnApp.Migrations
 
                     b.HasOne("TurnApp.Models.Profesional.Profesional", null)
                         .WithMany()
-                        .HasForeignKey("ProfesionalesId")
+                        .HasForeignKey("ProfesionalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -292,8 +292,7 @@ namespace TurnApp.Migrations
                     b.HasOne("TurnApp.Models.Paciente.Paciente", "Paciente")
                         .WithMany("Turnos")
                         .HasForeignKey("PacienteId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("TurnApp.Models.Profesional.Profesional", "Profesional")
                         .WithMany("Turnos")

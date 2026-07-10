@@ -14,7 +14,7 @@ namespace TurnApp.Controllers
 {
     [Route("api/profesionales")]
     [ApiController]
-    [Authorize(Roles = $"{ROLES.Administrador}, {ROLES.Profesional}")]
+    [Authorize]
     [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status500InternalServerError)]
     public class ProfesionalController : ControllerBase
     {
