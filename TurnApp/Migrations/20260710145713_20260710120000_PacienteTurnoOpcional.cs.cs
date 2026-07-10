@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TurnApp.Migrations
 {
     /// <inheritdoc />
-    public partial class CreacionInicio : Migration
+    public partial class _20260710120000_PacienteTurnoOpcionalcs : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -128,11 +128,11 @@ namespace TurnApp.Migrations
                 columns: table => new
                 {
                     EspecialidadesId = table.Column<int>(type: "int", nullable: false),
-                    ProfesionalesId = table.Column<int>(type: "int", nullable: false)
+                    ProfesionalId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EspecialidadProfesional", x => new { x.EspecialidadesId, x.ProfesionalesId });
+                    table.PrimaryKey("PK_EspecialidadProfesional", x => new { x.EspecialidadesId, x.ProfesionalId });
                     table.ForeignKey(
                         name: "FK_EspecialidadProfesional_Especialidades_EspecialidadesId",
                         column: x => x.EspecialidadesId,
@@ -140,8 +140,8 @@ namespace TurnApp.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_EspecialidadProfesional_Profesionales_ProfesionalesId",
-                        column: x => x.ProfesionalesId,
+                        name: "FK_EspecialidadProfesional_Profesionales_ProfesionalId",
+                        column: x => x.ProfesionalId,
                         principalTable: "Profesionales",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -155,7 +155,7 @@ namespace TurnApp.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FechaHora = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EstadoTurno = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PacienteId = table.Column<int>(type: "int", nullable: false),
+                    PacienteId = table.Column<int>(type: "int", nullable: true),
                     ProfesionalId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -192,9 +192,9 @@ namespace TurnApp.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_EspecialidadProfesional_ProfesionalesId",
+                name: "IX_EspecialidadProfesional_ProfesionalId",
                 table: "EspecialidadProfesional",
-                column: "ProfesionalesId");
+                column: "ProfesionalId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Pacientes_UserId",

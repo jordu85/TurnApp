@@ -12,7 +12,7 @@ namespace TurnApp.Controllers
 {
     [Route("api/pacientes")]
     [ApiController]
-    [Authorize(Roles = $"{ROLES.Administrador}, {ROLES.Profesional}")]
+    [Authorize]
     [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status500InternalServerError)]
     public class PacienteController : ControllerBase
     {
@@ -23,7 +23,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = $"{ROLES.Administrador}")]
+        [Authorize(Roles = $"{ROLES.Administrador}, {ROLES.Profesional}")]
         [ProducesResponseType(typeof(List<PacienteDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<PacienteDTO>>> GetAll()
@@ -33,7 +33,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize]
+        [Authorize(Roles = $"{ROLES.Administrador}, {ROLES.Profesional}")]
         [ProducesResponseType(typeof(PacienteDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<PacienteDTO>> GetOneById(int id)

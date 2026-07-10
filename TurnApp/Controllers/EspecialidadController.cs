@@ -11,7 +11,7 @@ namespace TurnApp.Controllers
 {
     [Route("api/especialidades")]
     [ApiController]
-    [Authorize(Roles = ROLES.Administrador)]
+    [Authorize]
     [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status500InternalServerError)]
     public class EspecialidadController : ControllerBase
     {
@@ -31,7 +31,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize]
+        [Authorize(Roles = $"{ROLES.Administrador}, {ROLES.Profesional}")]
         [ProducesResponseType(typeof(EspecialidadDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<EspecialidadDTO>> GetOneById(int id)
@@ -53,10 +53,10 @@ namespace TurnApp.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = $"{ROLES.Administrador}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(EspecialidadDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Especialidad), StatusCodes.Status201Created)]
         public async Task<ActionResult<Especialidad>> CreateOne([FromBody] EspecialidadDTO createEsp)
         {
             try
@@ -76,7 +76,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = $"{ROLES.Administrador}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(Especialidad), StatusCodes.Status200OK)]
@@ -100,7 +100,7 @@ namespace TurnApp.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = $"{ROLES.Administrador}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status200OK)]
