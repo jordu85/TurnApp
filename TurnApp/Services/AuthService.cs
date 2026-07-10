@@ -88,9 +88,16 @@ namespace TurnApp.Services
         private int GetUserIdFromContext(HttpContext context)
         {
             var user = context.User.Claims.FirstOrDefault(claim => claim.Type == "id");
-            int id;
-            bool ok = int.TryParse(user?.Value, out id);
-            if (!ok) throw new ErrorResponse(HttpStatusCode.BadRequest, "invalid jwt token");
+            if (user?.Value == null)
+            {
+                throw new ErrorResponse(HttpStatusCode.Unauthorized, "Token invalido.");
+            }
+
+            if (!int.TryParse(user.Value, out int id))
+            {
+                throw new ErrorResponse(HttpStatusCode.Unauthorized, "Token invalido.");
+            }
+
             return id;
         }
 
@@ -106,7 +113,7 @@ namespace TurnApp.Services
                 new Claim("id", user.Id.ToString())
             };
 
-            if (user.Roles != null || user.Roles?.Count > 0)
+            if (user.Roles?.Count > 0)
             {
                 foreach (var role in user.Roles)
                 {
@@ -181,7 +188,7 @@ namespace TurnApp.Services
             var tokenDescriptor = new SecurityTokenDescriptor()
             {
                 Subject = claims,
-                Expires = DateTime.UtcNow.AddMinutes(1),
+                Expires = DateTime.UtcNow.AddMinutes(120),
                 SigningCredentials = credentials
             };
 
