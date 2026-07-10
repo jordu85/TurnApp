@@ -17,14 +17,12 @@ namespace TurnApp.Services
         private readonly IMapper _mapper;
         private readonly IRepository<Profesional> _repo;
         private readonly EspecialidadService _espService;
-        private readonly TurnoService _turnService;
 
-        public ProfesionalService(IMapper mapper, EspecialidadService espService, TurnoService turnService, IRepository<Profesional> repo)
+        public ProfesionalService(IMapper mapper, EspecialidadService espService, IRepository<Profesional> repo)
         {
             _mapper = mapper;
             _repo = repo;
             _espService = espService;
-            _turnService = turnService;
         }
 
         public async Task<List<ProfesionalDTO>> GetAll()
@@ -81,13 +79,6 @@ namespace TurnApp.Services
         public async Task<Profesional> UpdateOneById(int id, UpdateProfesionalDTO updateDto)
         {
             var prof = await _GetOneById(id);
-
-            if (updateDto.TurnosIds != null)
-            {
-                List<int> turnIds = updateDto.TurnosIds;
-                var turns = await _turnService.GetManyByIds(turnIds);
-                prof.Turnos = turns;
-            }
 
             var updated = _mapper.Map(updateDto, prof);
 
