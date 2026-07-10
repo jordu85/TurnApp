@@ -58,7 +58,7 @@ namespace TurnApp.Controllers
         [Authorize(Roles = $"{ROLES.Paciente}")]
         [ProducesResponseType(typeof(Paciente), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ResponseValidation), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<PacienteDTO>> CreateOne([FromBody] CreatePacienteDTO createPac)
+        public async Task<ActionResult<Paciente>> CreateOne([FromBody] CreatePacienteDTO createPac)
         {
             try
             {
@@ -77,13 +77,13 @@ namespace TurnApp.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(ROLES = $"{ROLES.Administrador}, {ROLES.Profesional}, {ROLES.Paciente}")]
+        [Authorize(Roles = $"{ROLES.Administrador}, {ROLES.Profesional}, {ROLES.Paciente}")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(Paciente), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseValidation), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<PacienteDTO>> UpdateOneById(int id, [FromBody] UpdatePacienteDTO updatePaciente)
+        public async Task<ActionResult<Paciente>> UpdateOneById(int id, [FromBody] UpdatePacienteDTO updatePaciente)
         {
             try
             {
@@ -101,80 +101,80 @@ namespace TurnApp.Controllers
             }
         }
 
-        [HttpPut("{id}/turnos")]
-        [Authorize(ROLES = $"{ROLES.Administrador}, {ROLES.Profesional}, {ROLES.Paciente}")]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(Paciente), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ResponseValidation), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<PacienteDTO>> AsignarTurnosAPaciente(int id, [FromBody] AsignarTurnosAPacienteDTO asign)
-        {
-            try
-            {
-                var pac = await _pacService.AsignarTurnosAPaciente(id, asign);
-                return Ok(pac);
-            }
-            catch (ErrorResponse ex)
-            {
-                return StatusCode((int)ex.StatusCode, ex.Message);
-            }
-            catch (Exception ex)
-            {
-                ResponseMessage msg = new ResponseMessage(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, msg);
-            }
-        }
+        //[HttpPut("{id}/turnos")]
+        //[Authorize(Roles = $"{ROLES.Administrador}, {ROLES.Profesional}, {ROLES.Paciente}")]
+        //[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        //[ProducesResponseType(StatusCodes.Status403Forbidden)]
+        //[ProducesResponseType(typeof(Paciente), StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(ResponseValidation), StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
+        //public async Task<ActionResult<Paciente>> AsignarTurnosAPaciente(int id, [FromBody] AsignarTurnosAPacienteDTO asign)
+        //{
+        //    try
+        //    {
+        //        var pac = await _pacService.AsignarTurnosAPaciente(id, asign);
+        //        return Ok(pac);
+        //    }
+        //    catch (ErrorResponse ex)
+        //    {
+        //        return StatusCode((int)ex.StatusCode, ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ResponseMessage msg = new ResponseMessage(ex.Message);
+        //        return StatusCode(StatusCodes.Status500InternalServerError, msg);
+        //    }
+        //}
 
-        [HttpGet("{id}/turnos")]
-        [Authorize(Roles = $"{ROLES.Administrador}, ${ROLES.Profesional}")]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(Paciente), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ResponseValidation), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<TurnoDTO>>> GetTurnosByPacienteId(int id)
-        {
-            try
-            {
-                var turnos = await _pacService.GetTurnosByPacienteId(id);
-                return Ok(turnos);
-            }
-            catch (ErrorResponse ex)
-            {
-                return StatusCode((int)ex.StatusCode, ex.Message);
-            }
-            catch (Exception ex)
-            {
-                ResponseMessage msg = new ResponseMessage(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, msg);
-            }
-        }
+        //[HttpGet("{id}/turnos")]
+        //[Authorize(Roles = $"{ROLES.Administrador}, ${ROLES.Profesional}")]
+        //[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        //[ProducesResponseType(StatusCodes.Status403Forbidden)]
+        //[ProducesResponseType(typeof(TurnoDTO), StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(ResponseValidation), StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
+        //public async Task<ActionResult<List<TurnoDTO>>> GetTurnosByPacienteId(int id)
+        //{
+        //    try
+        //    {
+        //        var turnos = await _pacService.GetTurnosByPacienteId(id);
+        //        return Ok(turnos);
+        //    }
+        //    catch (ErrorResponse ex)
+        //    {
+        //        return StatusCode((int)ex.StatusCode, ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ResponseMessage msg = new ResponseMessage(ex.Message);
+        //        return StatusCode(StatusCodes.Status500InternalServerError, msg);
+        //    }
+        //}
 
-        [HttpGet("/turnos-propios")]
-        [Authorize(Roles = $"{ROLES.Paciente}")]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(Paciente), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ResponseValidation), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<TurnoDTO>>> GetTurnosPropios()
-        {
-            try
-            {
-                var turnos = await _pacService.GetTurnosPropios(HttpContext);
-                return Ok(turnos);
-            }
-            catch (ErrorResponse ex)
-            {
-                return StatusCode((int)ex.StatusCode, ex.Message);
-            }
-            catch (Exception ex)
-            {
-                ResponseMessage msg = new ResponseMessage(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, msg);
-            }
-        }
+        //[HttpGet("/turnos-propios")]
+        //[Authorize(Roles = $"{ROLES.Paciente}")]
+        //[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        //[ProducesResponseType(StatusCodes.Status403Forbidden)]
+        //[ProducesResponseType(typeof(TurnoDTO), StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(ResponseValidation), StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
+        //public async Task<ActionResult<List<TurnoDTO>>> GetTurnosPropios()
+        //{
+        //    try
+        //    {
+        //        var turnos = await _pacService.GetTurnosPropios(HttpContext);
+        //        return Ok(turnos);
+        //    }
+        //    catch (ErrorResponse ex)
+        //    {
+        //        return StatusCode((int)ex.StatusCode, ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ResponseMessage msg = new ResponseMessage(ex.Message);
+        //        return StatusCode(StatusCodes.Status500InternalServerError, msg);
+        //    }
+        //}
 
         [HttpDelete("{id}")]
         [Authorize(Roles = ROLES.Administrador)]

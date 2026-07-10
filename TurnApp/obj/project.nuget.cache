@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "K+RroAIrZYs=",
+  "dgSpecHash": "9Pj+k60n3yw=",
   "success": true,
-  "projectFilePath": "C:\\Users\\juanl\\Desktop\\proy-p4\\TurnApp\\TurnApp.csproj",
+  "projectFilePath": "C:\\Users\\juanl\\Desktop\\TurnApp\\TurnApp\\TurnApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\juanl\\.nuget\\packages\\automapper\\16.1.1\\automapper.16.1.1.nupkg.sha512",
     "C:\\Users\\juanl\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",

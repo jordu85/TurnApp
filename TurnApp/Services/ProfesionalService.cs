@@ -105,20 +105,20 @@ namespace TurnApp.Services
             return await _repo.UpdateOne(prof);
         }
 
-        public async Task<List<TurnoDTO>> GetTurnosByProfesionalId(int id)
-        {
-            var prof = await _GetOneById(id);
+        //public async Task<List<TurnoDTO>> GetTurnosByProfesionalId(int id)
+        //{
+        //    var prof = await _GetOneById(id);
 
-            List<int> Ids = new();
+        //    List<int> Ids = new();
 
-            foreach (var t in prof.Turnos)
-            {
-                Ids.Add(t.Id);
-            }
+        //    foreach (var t in prof.Turnos)
+        //    {
+        //        Ids.Add(t.Id);
+        //    }
 
-            List<TurnoDTO> turnos = await _turnService.GetManyByIdsDto(Ids);
-            return turnos;
-        }
+        //    List<TurnoDTO> turnos = await _turnService.GetManyByIdsDto(Ids);
+        //    return turnos;
+        //}
 
         public async Task DeleteOneById(int id)
         {

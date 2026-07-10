@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\juanl\\Desktop\\proy-p4\\TurnApp\\TurnApp.csproj": {}
+    "C:\\Users\\juanl\\Desktop\\TurnApp\\TurnApp\\TurnApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\juanl\\Desktop\\proy-p4\\TurnApp\\TurnApp.csproj": {
+    "C:\\Users\\juanl\\Desktop\\TurnApp\\TurnApp\\TurnApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\juanl\\Desktop\\proy-p4\\TurnApp\\TurnApp.csproj",
+        "projectUniqueName": "C:\\Users\\juanl\\Desktop\\TurnApp\\TurnApp\\TurnApp.csproj",
         "projectName": "TurnApp",
-        "projectPath": "C:\\Users\\juanl\\Desktop\\proy-p4\\TurnApp\\TurnApp.csproj",
+        "projectPath": "C:\\Users\\juanl\\Desktop\\TurnApp\\TurnApp\\TurnApp.csproj",
         "packagesPath": "C:\\Users\\juanl\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\juanl\\Desktop\\proy-p4\\TurnApp\\obj\\",
+        "outputPath": "C:\\Users\\juanl\\Desktop\\TurnApp\\TurnApp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
