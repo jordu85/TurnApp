@@ -1,3 +1,5 @@
 .vs/
 **/bin/
 **/obj/
+/TurnApp/bin/
+/TurnApp/obj/
