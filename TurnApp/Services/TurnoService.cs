@@ -80,7 +80,7 @@ namespace TurnApp.Services
 
         public async Task<List<Turno>> GetManyByIds(List<int> ids)
         {
-            if (ids.Count == 0 || ids == null)
+            if (ids == null || ids.Count == 0)
             {
                 throw new ErrorResponse(
                     HttpStatusCode.BadRequest,
@@ -101,7 +101,7 @@ namespace TurnApp.Services
 
         public async Task<List<TurnoDTO>> GetManyByIdsDto(List<int> ids)
         {
-            if (ids.Count == 0 || ids == null)
+            if (ids == null || ids.Count == 0)
             {
                 throw new ErrorResponse(
                     HttpStatusCode.BadRequest,
@@ -133,15 +133,24 @@ namespace TurnApp.Services
         {
             var prof = await _profService.GetOneById(id);
 
-            var turnos = await _repo.GetAll(t => t.PacienteId == prof.Id);
+            var turnos = await _repo.GetAll(t => t.ProfesionalId == prof.Id);
+            return _mapper.Map<List<TurnoDTO>>(turnos);
+
+        }
+
+        public async Task<List<TurnoDTO>> GetTurnosDisponiblesByProfesionalId(int id)
+        {
+            var prof = await _profService.GetOneById(id);
+
+            var turnos = await _repo.GetAll(t => t.ProfesionalId == prof.Id && t.EstadoTurno == ESTADOTURNO.Disponible);
             return _mapper.Map<List<TurnoDTO>>(turnos);
 
         }
 
         public async Task<List<TurnoDTO>> GetTurnosPropios(HttpContext context)
         {
-            var userId = context.User.FindFirst("UserId")?.Value;
-            if(userId == null)
+            var userIdClaim = context.User.FindFirst("UserId")?.Value;
+            if(string.IsNullOrWhiteSpace(userIdClaim))
             {
                 throw new ErrorResponse(
                     HttpStatusCode.Unauthorized,
@@ -149,7 +158,13 @@ namespace TurnApp.Services
                     );
             }
 
-            int pacienteId = int.Parse(userId);
+            if (!int.TryParse(userIdClaim, out int pacienteId))
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.BadRequest,
+                    "Token invalido.");
+            }
+
             var turnos = await _repo.GetAll(t => t.PacienteId == pacienteId);
             return _mapper.Map<List<TurnoDTO>>(turnos);
         }

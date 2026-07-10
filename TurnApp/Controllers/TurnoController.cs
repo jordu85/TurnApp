@@ -9,7 +9,7 @@ using TurnApp.Utils;
 
 namespace TurnApp.Controllers
 {
-    [Route("api/turno")]
+    [Route("api/turnos")]
     [ApiController]
     [Authorize]
     [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status500InternalServerError)]
@@ -130,6 +130,50 @@ namespace TurnApp.Controllers
             try
             {
                 var turnos = await _turnService.GetTurnosByPacienteId(pacienteId);
+                return Ok(turnos);
+            }
+            catch (ErrorResponse ex)
+            {
+                return StatusCode((int)ex.StatusCode, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                ResponseMessage msg = new ResponseMessage(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, msg);
+            }
+        }
+
+        [HttpGet("profesional/{profesionalId}")]
+        [Authorize(Roles = $"{ROLES.Administrador}, {ROLES.Profesional}")]
+        [ProducesResponseType(typeof(List<TurnoDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<TurnoDTO>>> GetTurnosByProfesionalId(int profesionalId)
+        {
+            try
+            {
+                var turnos = await _turnService.GetTurnosByProfesionalId(profesionalId);
+                return Ok(turnos);
+            }
+            catch (ErrorResponse ex)
+            {
+                return StatusCode((int)ex.StatusCode, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                ResponseMessage msg = new ResponseMessage(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, msg);
+            }
+        }
+
+        [HttpGet("profesional/disponibles/{profesionalId}")]
+        [Authorize(Roles = $"{ROLES.Administrador}, {ROLES.Profesional}, {ROLES.Paciente}")]
+        [ProducesResponseType(typeof(List<TurnoDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<TurnoDTO>>> GetTurnosDisponiblesByProfesionalId(int profesionalId)
+        {
+            try
+            {
+                var turnos = await _turnService.GetTurnosDisponiblesByProfesionalId(profesionalId);
                 return Ok(turnos);
             }
             catch (ErrorResponse ex)
