@@ -17,7 +17,7 @@ namespace TurnApp.Services
     {
         Task<LoginResponse> Login(LoginDTO login, HttpContext context);
         Task Logout(HttpContext context);
-        Task<UserDTO> Register(RegisterDTO register);
+        Task<UserDTO> Register(RegisterDTO register, HttpContext context);
         Task<UserDTO> UpdateRolesToUser(int userId, List<int> roleIds);
         Task GeneratePwdTokenToUser(HttpContext context);
         Task VerifyUserPwdToken(int userId, string token);
@@ -129,7 +129,7 @@ namespace TurnApp.Services
             );
         }
 
-        public async Task<UserDTO> Register(RegisterDTO register)
+        public async Task<UserDTO> Register(RegisterDTO register, HttpContext context)
         {
             User? u = await _userService
                 .GetOneByDni(
@@ -152,6 +152,7 @@ namespace TurnApp.Services
             user.Roles.Add(role);
 
             var created = await _userService.CreateOne(user);
+            await SetCookie(created, context);
             return _mapper.Map<UserDTO>(created);
         }
 

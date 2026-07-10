@@ -19,7 +19,7 @@ namespace TurnApp.Services
 
         public async Task<List<Especialidad>> GetAll() => await _repo.GetAll();
 
-        public async Task<Especialidad> GetOneById(int id)
+        private async Task<Especialidad> _GetOneById(int id)
         {
             var especialidad = await _repo.GetOne(x => x.Id == id);
 
@@ -33,6 +33,13 @@ namespace TurnApp.Services
             return especialidad;
         }
 
+        public async Task<EspecialidadDTO> GetOneById(int id)
+        {
+            var esp = await _GetOneById(id);
+            var dto = _mapper.Map<EspecialidadDTO>(esp);
+            return dto;
+        }
+
         public async Task<Especialidad> CreateOne(EspecialidadDTO esp)
         {
             var e = _mapper.Map<Especialidad>(esp);
@@ -41,7 +48,7 @@ namespace TurnApp.Services
 
         public async Task<Especialidad> UpdateOneById(int id, EspecialidadDTO updateDto)
         {
-            var esp = await GetOneById(id);
+            var esp = await _GetOneById(id);
 
             var updated = _mapper.Map(updateDto, esp);
 
@@ -50,7 +57,7 @@ namespace TurnApp.Services
 
         public async Task DeleteOneById(int id)
         {
-            var esp = await GetOneById(id);
+            var esp = await _GetOneById(id);
             await _repo.DeleteOne(esp);
         }
 
