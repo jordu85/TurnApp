@@ -31,10 +31,12 @@ namespace TurnApp.Services
 
         public async Task<List<TurnoDTO>> GetAll()
         {
-            var lista = await _repo.GetAll();
-            var turns = _mapper.Map<List<TurnoDTO>>(lista);
+            var turnos = await _db.Turnos
+                .Include(t => t.Paciente)
+                .Include(t => t.Profesional)
+                .ToListAsync();
 
-            return turns;
+            return _mapper.Map<List<TurnoDTO>>(turnos);
         }
 
         private async Task<Turno> _GetOneById(int id)
@@ -149,7 +151,7 @@ namespace TurnApp.Services
 
         public async Task<List<TurnoDTO>> GetTurnosPropios(HttpContext context)
         {
-            var userIdClaim = context.User.FindFirst("UserId")?.Value;
+            var userIdClaim = context.User.FindFirst("Id")?.Value;
             if(string.IsNullOrWhiteSpace(userIdClaim))
             {
                 throw new ErrorResponse(
@@ -158,14 +160,30 @@ namespace TurnApp.Services
                     );
             }
 
-            if (!int.TryParse(userIdClaim, out int pacienteId))
+            if (!int.TryParse(userIdClaim, out int userId))
             {
                 throw new ErrorResponse(
                     HttpStatusCode.BadRequest,
                     "Token invalido.");
             }
 
-            var turnos = await _repo.GetAll(t => t.PacienteId == pacienteId);
+            var paciente = await _db.Pacientes
+                .FirstOrDefaultAsync(p => p.UserId == userId);
+
+            if (paciente == null)
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.NotFound,
+                    "No se encontro un paciente asociado al usuario."
+                    );
+            }
+
+            var turnos = await _db.Turnos
+                .Include(t => t.Paciente)
+                .Include(t => t.Profesional)
+                .Where(t => t.PacienteId == paciente.Id)
+                .ToListAsync();
+
             return _mapper.Map<List<TurnoDTO>>(turnos);
         }
 

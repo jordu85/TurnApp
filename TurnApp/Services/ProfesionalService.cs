@@ -92,6 +92,14 @@ namespace TurnApp.Services
 
         public async Task<Profesional> AsignarEspecialidadesAProfesional(int id, AsignarEspecialidadesAProfesionalDTO asign)
         {
+            if (asign.EspecialidadesIds == null || asign.EspecialidadesIds.Count == 0)
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.BadRequest,
+                    "EspecialidadesIds no puede estar vacia."
+                    );
+            }
+
             var prof = await _GetOneById(id);
 
             List<int> ids = asign.EspecialidadesIds;
@@ -103,6 +111,14 @@ namespace TurnApp.Services
 
         public async Task<List<EspecialidadDTO>> GetEspecialidadesByProfesionalId(int id)
         {
+            bool existe = await _db.Profesionales.AnyAsync(p => p.Id == id);
+            if (!existe)
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.BadRequest,
+                    $"No se encontro profesional con Id = {id}."
+                    );
+            }
             var especialidades = await _db.Profesionales
                 .Where(p => p.Id == id)
                 .SelectMany(p => p.Especialidades)
