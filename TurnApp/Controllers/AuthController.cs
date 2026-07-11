@@ -171,5 +171,27 @@ namespace TurnApp.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, msg);
             }
         }
+
+        [HttpGet("me")]
+        [Authorize]
+        [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<UserDTO>> Me()
+        {
+            try
+            {
+                var res = await _authService.Me(HttpContext);
+                return Ok(res);
+            }
+            catch (ErrorResponse ex)
+            {
+                return StatusCode((int)ex.StatusCode, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                ResponseMessage msg = new ResponseMessage(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, msg);
+            }
+        }
     }
 }
