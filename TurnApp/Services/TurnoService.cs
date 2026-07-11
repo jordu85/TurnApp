@@ -1,0 +1,213 @@
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using System.Net;
+using TurnApp.Config;
+using TurnApp.Enums;
+using TurnApp.Models.Paciente;
+using TurnApp.Models.Turno;
+using TurnApp.Models.Turno.DTO;
+using TurnApp.Repositories;
+using TurnApp.Utils;
+
+namespace TurnApp.Services
+{
+    public class TurnoService
+    {
+
+        private readonly IMapper _mapper;
+        private readonly IRepository<Turno> _repo;
+        private readonly AppDbContext _db;
+        private readonly PacienteService _pacService;
+        private readonly ProfesionalService _profService;
+
+        public TurnoService(IMapper mapper, PacienteService pacService, ProfesionalService profService, IRepository<Turno> repo, AppDbContext db)
+        {
+            _mapper = mapper;
+            _repo = repo;
+            _db = db;
+            _pacService = pacService;
+            _profService = profService;
+        }
+
+        public async Task<List<TurnoDTO>> GetAll()
+        {
+            var turnos = await _db.Turnos
+                .Include(t => t.Paciente)
+                .Include(t => t.Profesional)
+                .ToListAsync();
+
+            return _mapper.Map<List<TurnoDTO>>(turnos);
+        }
+
+        private async Task<Turno> _GetOneById(int id)
+        {
+            var turno = await _repo.GetOne(e => e.Id == id);
+
+            if (turno == null)
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.NotFound,
+                    $"No se encontro turno con ID = {id}."
+                );
+            }
+
+            return turno;
+        }
+
+        public async Task<Turno> GetOneById(int id) => await _GetOneById(id);
+
+        public async Task<Turno> CreateOne(CreateTurnoDTO turn)
+        {
+            var turno = _mapper.Map<Turno>(turn);
+
+            turno.EstadoTurno = ESTADOTURNO.Disponible;
+
+            return await _repo.CreateOne(turno);
+        }
+
+        public async Task<Turno> UpdateOneById(int id, UpdateTurnoDTO updateDto)
+        {
+            var turn = await _GetOneById(id);
+
+            var updated = _mapper.Map(updateDto, turn);
+
+            return await _repo.UpdateOne(updated);
+        }
+
+        public async Task DeleteOneById(int id)
+        {
+            var turn = await _GetOneById(id);
+            await _repo.DeleteOne(turn);
+        }
+
+        public async Task<List<Turno>> GetManyByIds(List<int> ids)
+        {
+            if (ids == null || ids.Count == 0)
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.BadRequest,
+                    "La lista de TurnosIds no puede estar vacia"
+                );
+            }
+
+            var lista = await _repo.GetAll(x => ids.Contains(x.Id));
+            if (lista.Count == 0)
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.BadRequest,
+                    "No coincide ningun Id"
+                );
+            }
+            return lista;
+        }
+
+        public async Task<List<TurnoDTO>> GetManyByIdsDto(List<int> ids)
+        {
+            if (ids == null || ids.Count == 0)
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.BadRequest,
+                    "La lista de TurnosIds no puede estar vacia"
+                );
+            }
+
+            var lista = await _repo.GetAll(x => ids.Contains(x.Id));
+            if (lista.Count == 0)
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.BadRequest,
+                    "No coincide ningun Id"
+                );
+            }
+            return _mapper.Map<List<TurnoDTO>>(lista);
+        }
+
+        public async Task<List<TurnoDTO>> GetTurnosByPacienteId(int id)
+        {
+            var pac = await _pacService.GetOneById(id);
+
+            var turnos = await _repo.GetAll(t => t.PacienteId == pac.Id);
+            return _mapper.Map<List<TurnoDTO>>(turnos);
+            
+        }
+
+        public async Task<List<TurnoDTO>> GetTurnosByProfesionalId(int id)
+        {
+            var prof = await _profService.GetOneById(id);
+
+            var turnos = await _repo.GetAll(t => t.ProfesionalId == prof.Id);
+            return _mapper.Map<List<TurnoDTO>>(turnos);
+
+        }
+
+        public async Task<List<TurnoDTO>> GetTurnosDisponiblesByProfesionalId(int id)
+        {
+            var prof = await _profService.GetOneById(id);
+
+            var turnos = await _repo.GetAll(t => t.ProfesionalId == prof.Id && t.EstadoTurno == ESTADOTURNO.Disponible);
+            return _mapper.Map<List<TurnoDTO>>(turnos);
+
+        }
+
+        public async Task<List<TurnoDTO>> GetTurnosPropios(HttpContext context)
+        {
+            var userIdClaim = context.User.FindFirst("Id")?.Value;
+            if(string.IsNullOrWhiteSpace(userIdClaim))
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.Unauthorized,
+                    "No se pudo obtener el UserId del token."
+                    );
+            }
+
+            if (!int.TryParse(userIdClaim, out int userId))
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.BadRequest,
+                    "Token invalido.");
+            }
+
+            var paciente = await _db.Pacientes
+                .FirstOrDefaultAsync(p => p.UserId == userId);
+
+            if (paciente == null)
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.NotFound,
+                    "No se encontro un paciente asociado al usuario."
+                    );
+            }
+
+            var turnos = await _db.Turnos
+                .Include(t => t.Paciente)
+                .Include(t => t.Profesional)
+                .Where(t => t.PacienteId == paciente.Id)
+                .ToListAsync();
+
+            return _mapper.Map<List<TurnoDTO>>(turnos);
+        }
+
+        public async Task<TurnoDTO> AsignarPacienteATurno(int turnoId, int pacienteId)
+        {
+            var turno = await _GetOneById(turnoId);
+            if (turno.EstadoTurno != ESTADOTURNO.Disponible)
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.BadRequest,
+                    "Solo se pueden asignar turnos con estado Disponible.");
+            }
+            turno.PacienteId = pacienteId;
+            turno.EstadoTurno = ESTADOTURNO.Reservado;
+            
+            await _repo.UpdateOne(turno);
+
+            var updatedTurno =  await _db.Turnos
+                .Include(t => t.Paciente)
+                .Include(t => t.Profesional)
+                .FirstAsync(t => t.Id == turnoId);
+
+            return _mapper.Map<TurnoDTO>(updatedTurno);
+        }
+
+    }
+}
