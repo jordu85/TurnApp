@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TurnApp.Enums;
+using TurnApp.Models.Especialidad.DTO;
 using TurnApp.Models.Paciente;
 using TurnApp.Models.Paciente.DTO;
 using TurnApp.Models.Profesional;
@@ -118,6 +119,31 @@ namespace TurnApp.Controllers
             {
                 var prof = await _profService.AsignarEspecialidadesAProfesional(id, asign);
                 return Ok(prof);
+            }
+            catch (ErrorResponse ex)
+            {
+                return StatusCode((int)ex.StatusCode, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                ResponseMessage msg = new ResponseMessage(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, msg);
+            }
+        }
+
+        [HttpGet("{id}/especialidades")]
+        [Authorize(Roles = $"{ROLES.Administrador}, {ROLES.Profesional}, {ROLES.Paciente}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(List<EspecialidadDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseValidation), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<EspecialidadDTO>>> GetEspecialidadesByProfesionalId(int id)
+        {
+            try
+            {
+                var especialidades = await _profService.GetEspecialidadesByProfesionalId(id);
+                return Ok(especialidades);
             }
             catch (ErrorResponse ex)
             {

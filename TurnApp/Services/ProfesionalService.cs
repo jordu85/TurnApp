@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using HandlebarsDotNet;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
+using TurnApp.Config;
+using TurnApp.Models.Especialidad.DTO;
 using TurnApp.Models.Paciente;
 using TurnApp.Models.Paciente.DTO;
 using TurnApp.Models.Profesional;
@@ -16,12 +19,14 @@ namespace TurnApp.Services
     {
         private readonly IMapper _mapper;
         private readonly IRepository<Profesional> _repo;
+        private readonly AppDbContext _db;
         private readonly EspecialidadService _espService;
 
-        public ProfesionalService(IMapper mapper, EspecialidadService espService, IRepository<Profesional> repo)
+        public ProfesionalService(IMapper mapper, EspecialidadService espService, IRepository<Profesional> repo, AppDbContext db)
         {
             _mapper = mapper;
             _repo = repo;
+            _db = db;
             _espService = espService;
         }
 
@@ -94,6 +99,17 @@ namespace TurnApp.Services
             prof.Especialidades = especialidades;
 
             return await _repo.UpdateOne(prof);
+        }
+
+        public async Task<List<EspecialidadDTO>> GetEspecialidadesByProfesionalId(int id)
+        {
+            var especialidades = await _db.Profesionales
+                .Where(p => p.Id == id)
+                .SelectMany(p => p.Especialidades)
+                .ToListAsync();
+
+
+            return _mapper.Map<List<EspecialidadDTO>>(especialidades);
         }
 
         //public async Task<List<TurnoDTO>> GetTurnosByProfesionalId(int id)
