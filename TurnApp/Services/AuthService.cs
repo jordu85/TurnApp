@@ -19,6 +19,7 @@ namespace TurnApp.Services
         Task Logout(HttpContext context);
         Task<UserDTO> Register(RegisterDTO register, HttpContext context);
         Task<UserDTO> UpdateRolesToUser(int userId, List<int> roleIds);
+        Task<UserDTO> Me(HttpContext context);
         Task GeneratePwdTokenToUser(HttpContext context);
         Task VerifyUserPwdToken(int userId, string token);
     }
@@ -212,6 +213,23 @@ namespace TurnApp.Services
             UserDTO mapped = _mapper.Map<UserDTO>(updatedUser);
 
             return mapped;
+        }
+
+        public async Task<UserDTO> Me(HttpContext context)
+        {
+            var idClaim = context.User.FindFirst("id")?.Value;
+            if (idClaim == null || !int.TryParse(idClaim, out int userId))
+            {
+                throw new ErrorResponse(HttpStatusCode.Unauthorized, "No se pudo identificar al usuario");
+            }
+
+            var user = await _userService.GetOneById(userId);
+            if (user == null)
+            {
+                throw new ErrorResponse(HttpStatusCode.Unauthorized, "Usuario no encontrado");
+            }
+
+            return _mapper.Map<UserDTO>(user);
         }
     }
 }
