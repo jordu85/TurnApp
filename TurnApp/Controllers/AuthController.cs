@@ -193,5 +193,36 @@ namespace TurnApp.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, msg);
             }
         }
+
+        [HttpGet]
+        [Authorize(Roles = ROLES.Administrador)]
+        [ProducesResponseType(typeof(List<UserDTO>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<UserDTO>>> GetAllUsers()
+        {
+            var users = await _authService.GetAllUsers();
+            return Ok(users);
+        }
+
+        [HttpGet("search/{dni}")]
+        [Authorize(Roles = ROLES.Administrador)]
+        [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseMessage), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<UserDTO>> GetUserByDni(string dni)
+        {
+            try
+            {
+                var user = await _authService.GetUserByDni(dni);
+                return Ok(user);
+            }
+            catch (ErrorResponse ex)
+            {
+                return StatusCode((int)ex.StatusCode, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                ResponseMessage msg = new ResponseMessage(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, msg);
+            }
+        }
     }
 }

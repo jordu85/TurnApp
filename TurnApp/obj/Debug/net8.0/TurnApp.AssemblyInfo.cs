@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TurnApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+75a1ed26d47749c503b429e22f3dc8686c60afd5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+62bfc213372746b53bbe68aafe7f13d6008764bc")]
 [assembly: System.Reflection.AssemblyProductAttribute("TurnApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TurnApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
