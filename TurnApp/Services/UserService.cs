@@ -4,6 +4,8 @@ using TurnApp.Models.User.DTO;
 using TurnApp.Models.User;
 using TurnApp.Repositories;
 using TurnApp.Utils;
+using TurnApp.Config;
+using Microsoft.EntityFrameworkCore;
 
 namespace TurnApp.Services
 {
@@ -11,14 +13,23 @@ namespace TurnApp.Services
     {
         private readonly IMapper _mapper;
         private readonly IUserRepository _repo;
+        private readonly AppDbContext _db;
 
-        public UserService(IMapper mapper, IUserRepository repo)
+        public UserService(IMapper mapper, IUserRepository repo, AppDbContext db)
         {
             _mapper = mapper;
             _repo = repo;
+            _db = db;
         }
 
-        public async Task<List<User>> GetAll() => await _repo.GetAll();
+        public async Task<List<UserDTO>> GetAll()
+        {
+            var users = await _db.Users
+                .Include(u => u.Roles)
+                .ToListAsync();
+
+            return _mapper.Map<List<UserDTO>>(users);
+        }
 
         public async Task<User> GetOneById(int id)
         {

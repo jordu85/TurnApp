@@ -10,6 +10,7 @@ using TurnApp.Models.Role;
 using TurnApp.Models.User.DTO;
 using TurnApp.Models.User;
 using TurnApp.Utils;
+using Microsoft.Identity.Client;
 
 namespace TurnApp.Services
 {
@@ -20,6 +21,8 @@ namespace TurnApp.Services
         Task<UserDTO> Register(RegisterDTO register, HttpContext context);
         Task<UserDTO> UpdateRolesToUser(int userId, List<int> roleIds);
         Task<UserDTO> Me(HttpContext context);
+        Task<List<UserDTO>> GetAllUsers();
+        Task<UserDTO> GetUserByDni(string dni);
         Task GeneratePwdTokenToUser(HttpContext context);
         Task VerifyUserPwdToken(int userId, string token);
     }
@@ -84,6 +87,25 @@ namespace TurnApp.Services
                 User = _mapper.Map<UserDTO>(user)
             };
             return loginReponse;
+        }
+
+        public async Task<List<UserDTO>> GetAllUsers()
+        {
+            var users = await _userService.GetAll();
+            return _mapper.Map<List<UserDTO>>(users);
+        }
+       
+        public async Task<UserDTO> GetUserByDni(string dni)
+        {
+            var user = await _userService.GetOneByDni(dni);
+            if (user == null)
+            {
+                throw new ErrorResponse(
+                    HttpStatusCode.NotFound,
+                    $"Usuerio con DNI = {dni} no encontrado."
+                    );
+            }
+            return _mapper.Map<UserDTO>(user);
         }
 
         private int GetUserIdFromContext(HttpContext context)

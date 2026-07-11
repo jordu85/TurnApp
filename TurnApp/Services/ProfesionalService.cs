@@ -32,8 +32,10 @@ namespace TurnApp.Services
 
         public async Task<List<ProfesionalDTO>> GetAll()
         {
-            var lista = await _repo.GetAll();
-            var profs = _mapper.Map<List<ProfesionalDTO>>(lista);
+            var profesionales = await _db.Profesionales
+                .Include(p => p.Especialidades)
+                .ToListAsync();
+            var profs = _mapper.Map<List<ProfesionalDTO>>(profesionales);
 
             return profs;
         }
